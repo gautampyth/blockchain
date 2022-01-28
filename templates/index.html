@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<style>
+
+.toptitle{
+background-color: #000;
+padding: 12px 0px;
+margin-bottom: 25px;
+}
+.toptitle h3{
+color:#fff;
+margin:0;
+}
+.wtsubmitbtn{
+background: #156e05;
+color: #fff;
+border: none;
+padding: 6px 20px;
+font-size: 19px;
+    margin-bottom: 12px;
+}
+.wtclicklink{
+    border: 1px solid #e32d2d;
+    color: #fff!important;
+    text-decoration: none!important;
+    padding: 10px 10px;
+    margin-bottom: 20px;
+    background: #cd2626;
+    letter-spacing: 1px;
+}
+.wth2title{
+font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #2e6e04;
+    padding-bottom: 12px;
+}
+label {
+    font-weight: 600;
+}
+.errormsg{
+ background: #d5f1e4;
+    font-size: 20px;
+    padding: 13px 10px;
+}
+.error {
+    color: #ff0000;
+    font-weight: normal;
+    font-size: 15px;
+}
+</style>
+<body class="wt-bg">
+<div class="toptitle">
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+<h3>Blockchain Data</h3>
+</div>
+</div>
+</div>
+</div>
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+{% if msg %}
+<h2 class="errormsg">{{msg}}</h2>
+{% endif %}
+<h3 class="wth2title">Add New Transaction</h3>
+<form class="form-row" method="post" action="/transaction/new" name="registration">
+
+<div class="form-group col-4">
+    <label for="sender">Sender:</label>
+    <input type="text" class="form-control" name="sender">
+</div>
+<div class="form-group col-4">
+    <label for="recipient">recipient:</label>
+    <input type="text" class="form-control" name="recipient">
+</div>
+
+<div class="form-group col-4">
+    <label for="amount">Amount:</label>
+    <input type="text" class="form-control" name="amount">
+</div>
+
+<div class="form-group col-12">
+    <input id="postbtn" class="wtsubmitbtn" type="submit">
+</div>
+
+</form>
+
+<div class="mb-4">
+<a href="/mine" class="wtclicklink">Click Here To Mine New Block</a>
+</div>
+
+
+<!--<a href="/transaction/new">Transaction New</a>-->
+{% if a %}
+{% if a.topo %}
+<h2 class="wth2title">Mined Block Data</h2>
+
+<table class="table table-bordered">
+<tr>
+    <th rowspan='1' colspan="1" >Index</th>
+    <th rowspan='1' colspan="1" >previous_hash</th>
+    <th rowspan='1' colspan="4" >Transaction</th>
+
+
+
+</tr>
+    <tr>
+
+    <th rowspan='1' colspan="0" ></th>
+    <th rowspan='1' colspan="0" ></th>
+    <th rowspan='1' colspan="1" >Sender</th>
+    <th rowspan='1' colspan="1" >Recipient</th>
+    <th rowspan='1' colspan="1" >Amount</th>
+    <th rowspan='1' colspan="1" >Timestamp</th>
+
+
+
+
+</tr>
+
+
+<tr>
+    <td>{{a.topo.index}}</td>
+    <td>{{a.topo.previous_hash}}</td>
+    {% for t in a.topo.transactions %}
+
+    <td>{{t.sender}}</td>
+    <td>{{t.recipient}}</td>
+    <td>{{t.amount}}</td>
+    {% endfor %}
+
+    <td>{{a.topo.timestamp}}</td>
+
+</tr>
+
+</table>
+
+{% endif %}
+
+    <hr>
+
+{% if a.chaindata %}
+
+<h2 class="wth2title">Blockchain Data</h2>
+
+<table class="table table-bordered">
+<tr>
+    <th rowspan='1' colspan="1" >Index</th>
+    <th rowspan='1' colspan="1" >previous_hash</th>
+    <th rowspan='1' colspan="4" >Transaction</th>
+
+
+
+</tr>
+    <tr>
+
+    <th rowspan='1' colspan="0" ></th>
+    <th rowspan='1' colspan="0" ></th>
+    <th rowspan='1' colspan="1" >Sender</th>
+    <th rowspan='1' colspan="1" >Recipient</th>
+    <th rowspan='1' colspan="1" >Amount</th>
+    <th rowspan='1' colspan="1" >Timestamp</th>
+
+
+
+
+</tr>
+
+{% for i in a.chaindata %}
+<tr>
+    <td>{{i.index}}</td>
+    <td>{{i.previous_hash}}</td>
+    {% if i.index == 1 %}
+        <td>none</td>
+        <td>none</td>
+        <td>none</td>
+    {% else %}
+        {% for t in i.transactions %}
+        <td>{{t.sender}}</td>
+        <td>{{t.recipient}}</td>
+        <td>{{t.amount}}</td>
+        {% endfor %}
+    {% endif %}
+    <td>{{i.timestamp}}</td>
+
+</tr>
+{% endfor %}
+</table>
+{% endif %}
+{% endif %}
+</div>
+</div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script src='https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js'></script>
+<script>
+    $(function() {
+  $("form[name='registration']").validate({
+    rules: {
+       sender: {
+        required: true,
+         minlength: 5
+      },
+      recipient: {
+        required: true,
+         minlength: 5
+      },
+      amount: {
+        required: true
+      }
+    },
+    messages: {
+      sender: "This field is required",
+      recipient: "This field is required",
+      amount: "This field is required"
+    },
+
+    submitHandler: function(form) {
+      form.submit();
+       $("#postbtn").attr("disabled", true);
+    }
+  });
+});
+</script>
+</body>
+</html>
